@@ -18,6 +18,14 @@ $db = new Database;
 						$file_ext = strtolower(end($div));
 						$uinque_image = substr(md5(time()), 0,10).'.'.$file_ext;
 						$uploaded_image = "uploads/".$uinque_image;
+
+						if (empty($file_name)) {
+							echo '<span class="error">Please Select an image!</span>';						
+						}elseif ($file_size >1048576) {
+							echo '<span class="error">Image Size should be less then 1MB.</span>';							
+						}elseif (in_array($file_ext, $permited) === false) {
+							echo '<span class="error">You can upload only:-'.implode(',', $permited).'</span>';
+						}else{
 						
 						move_uploaded_file($file_temp, $uploaded_image);
 						$query = "INSERT INTO tbl_image(image) VALUES ('$uploaded_image')";
@@ -26,6 +34,7 @@ $db = new Database;
 							echo '<span class="success">Image Inserted Successfully.</span>';
 						}else{
 							echo '<span class="error">Image Not Inserted.</span>';
+						}
 						}
 					}
 				 ?>
