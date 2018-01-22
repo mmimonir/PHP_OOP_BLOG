@@ -26,31 +26,33 @@ class Database
     // Insert Data
     public function insert($data)
     {
-    	$insert_row = $this->link->query($data) or die($this->link->error.__LINE__);
-    	if ($insert_row) {
-    		return $insert_row;
-    	}else{
-    		return false;
-    	}
+        $insert_row = $this->link->query($data) or die($this->link->error.__LINE__);
+        if ($insert_row) {
+            return $insert_row;
+        } else {
+            return false;
+        }
     }
 
     // Select Data
-    public function select($data){
-    	$result = $this->link->query($data) or die($this->link->error.__LINE__);
-    	if ($result->num_rows > 0) {
-    		return $result;
-    	}else{
-    		return false;
-    	}
+    public function select($data)
+    {
+        $result = $this->link->query($data) or die($this->link->error.__LINE__);
+        if ($result->num_rows > 0) {
+            return $result;
+        } else {
+            return false;
+        }
     }
 
     // Delete Data
-    public function delete($data){
-    	$delete_row = $this->link->query($data) or die($this->link->error.__LINE__);
-    	if ($delete_row) {
-    		return $delete_row;
-    	}else{
-    		return false;
-    	}
+    public function delete($data)
+    {
+        $delete_row = $this->link->query($data) or die($this->link->error.__LINE__);
+        if ($delete_row) {
+            return $delete_row;
+        } else {
+            return false;
+        }
     }
 }

@@ -4,8 +4,8 @@ include 'lib/config.php';
 include 'lib/Database.php';
 $db = new Database;
 ?>
-<div class="myform">
-	<?php
+    <div class="myform">
+        <?php
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
     $permited       = array('jpg', 'jpeg', 'png', 'gif');
     $file_name      = $_FILES['image']['name'];
@@ -22,7 +22,6 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     } elseif (in_array($file_ext, $permited) === false) {
         echo '<span class="error">You can upload only:-' . implode(',', $permited) . '</span>';
     } else {
-
         move_uploaded_file($file_temp, $uploaded_image);
         $query         = "INSERT INTO tbl_image(image) VALUES ('$uploaded_image')";
         $inserted_rows = $db->insert($query);
@@ -34,41 +33,46 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     }
 }
 ?>
-	<form action="" method="post" enctype="multipart/form-data">
-		<table>
-			<tr>
-				<td>Select Image</td>
-				<td><input type="file" name="image"></td>
-			</tr>
-			<tr>
-				<td></td>
-				<td><input type="submit" name="submit" value="Upload Image"></td>
-			</tr>
-		</table>
-	</form>
+            <form action="" method="post" enctype="multipart/form-data">
+                <table>
+                    <tr>
+                        <td>Select Image</td>
+                        <td>
+                            <input type="file" name="image">
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                        <td></td>
+                        <td>
+                            <input type="submit" name="submit" value="Upload Image">
+                        </td>
+                    </tr>
+                </table>
+            </form>
 
 
-	<table width="100%">
-		<tr>
-			<th width="30%">No</th>
-			<th width="40%">Image</th>
-			<th width="30%">Action</th>
-		</tr>
-		<?php
-		//For deleting image from computer directory.
+            <table width="100%">
+                <tr>
+                    <th width="30%">No</th>
+                    <th width="40%">Image</th>
+                    <th width="30%">Action</th>
+                </tr>
+                <?php
+        //For deleting image from computer directory.
 if (isset($_GET['del'])) {
     $id = $_GET['del'];
 
     $getquery    = "SELECT * FROM tbl_image WHERE id='$id'";
-	$getImg = $db->select($getquery);
-	if ($getImg) {
-	while ($imgdata = $getImg->fetch_assoc()) {
-	    $delimg = $imgdata['image'];
-	    unlink($delimg);
-	}	
-	}
-	
-	//deleting image from database
+    $getImg = $db->select($getquery);
+    if ($getImg) {
+        while ($imgdata = $getImg->fetch_assoc()) {
+            $delimg = $imgdata['image'];
+            unlink($delimg);
+        }
+    }
+    
+    //deleting image from database
     $query    = "DELETE FROM tbl_image WHERE id = '$id'";
     $delImage = $db->delete($query);
     if ($delImage) {
@@ -78,23 +82,31 @@ if (isset($_GET['del'])) {
     }
 }
 ?>
-		<?php
+                    <?php
 $query    = "SELECT * FROM tbl_image";
 $getImage = $db->select($query);
 if ($getImage) {
     $i = 0;
     while ($result = $getImage->fetch_assoc()) {
-        $i++;
+        $i++; ?>
+                        <tr>
+                            <td>
+                                <?php echo $i; ?>
+                            </td>
+                            <td>
+                                <img src="<?php echo $result['image']; ?>" height="40px" width="50px" />
+                            </td>
+                            <td>
+                                <a href="?del=<?php echo $result['id']; ?>">Delete</a>
+                            </td>
+                        </tr>
+                        
 
-        ?>
-		<tr>
-			<td><?php echo $i; ?></td>
-			<td><img src="<?php echo $result['image']; ?>" height="40px" width="50px"/></td>
-			<td><a href="?del=<?php echo $result['id']; ?>">Delete</a></td>
-		</tr>
-		<?php }}?>
-	</table>
+                        <?php
+    }
+}?>
+            </table>
 
-</div>
+    </div>
 
-<?php include 'inc/footer.php';?>
+    <?php include 'inc/footer.php';?>
