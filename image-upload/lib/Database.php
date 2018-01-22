@@ -24,7 +24,8 @@ class Database
     }
 
     // Insert Data
-    public function insert($data){
+    public function insert($data)
+    {
     	$insert_row = $this->link->query($data) or die($this->link->error.__LINE__);
     	if ($insert_row) {
     		return $insert_row;
