@@ -39,7 +39,7 @@
                 </a>
             </h4>
             <a href="#">
-                <img src="admin/upload/<?php echo $result['image']; ?>" alt="post image" />
+                <img src="admin/<?php echo $result['image']; ?>" alt="post image" />
             </a>
 
             <?php echo $fm->textShorten($result['body']); ?>
