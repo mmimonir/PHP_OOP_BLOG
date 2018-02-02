@@ -12,6 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $body   = mysqli_real_escape_string($db->link, $_POST['body']);
     $tags   = mysqli_real_escape_string($db->link, $_POST['tags']);
     $author = mysqli_real_escape_string($db->link, $_POST['author']);
+    $userid = mysqli_real_escape_string($db->link, $_POST['userid']);
 
     $permited       = array('jpg', 'jpeg', 'png', 'gif');
     $file_name      = $_FILES['image']['name'];
@@ -30,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         echo '<span class="error">You can upload only:-' . implode(',', $permited) . '</span>';
     } else {
         move_uploaded_file($file_temp, $uploaded_image);
-        $query         = "INSERT INTO tbl_post (cat, tittle, body, image, author, tags) VALUES ('$cat', '$tittle', '$body', '$uploaded_image', '$author', '$tags')";
+        $query         = "INSERT INTO tbl_post (cat, tittle, body, image, author, tags, userid) VALUES ('$cat', '$tittle', '$body', '$uploaded_image', '$author', '$tags', '$userid')";
         $inserted_rows = $db->insert($query);
         if ($inserted_rows) {
             echo '<span class="success">New Post Added Successfully.</span>';
@@ -111,7 +112,8 @@ if ($category) {
                                 <label>Author</label>
                             </td>
                             <td>
-                                <input type="text" name="author" placeholder="Enter Author Name..." class="medium" />
+                                <input type="text" name="author" readonly value="<?php echo Session::get('username') ?>" class="medium" />
+                                <input type="hidden" name="userid" readonly value="<?php echo Session::get('userId') ?>" class="medium" />
                             </td>
                         </tr>
                         <tr>

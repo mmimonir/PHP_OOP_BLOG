@@ -2,11 +2,12 @@
 <?php include 'inc/sidebar.php' ?>
 
 <?php 
-if (!isset($_GET['editpostid']) || $_GET['editpostid'] == null) {
+$editpostid = mysqli_real_escape_string($db->link, $_GET['editpostid']);
+if (!isset($editpostid) || $editpostid == null) {
     echo "<script>window.location = 'postlist.php'; </script>";
     // header("Location:catlist.php");
 } else {
-    $postid = $_GET['editpostid'];
+    $postid = $editpostid;
 }
 
  ?>
@@ -22,6 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $body   = mysqli_real_escape_string($db->link, $_POST['body']);
     $tags   = mysqli_real_escape_string($db->link, $_POST['tags']);
     $author = mysqli_real_escape_string($db->link, $_POST['author']);
+    $userid = mysqli_real_escape_string($db->link, $_POST['userid']);
 
     $permited       = array('jpg', 'jpeg', 'png', 'gif');
     $file_name      = $_FILES['image']['name'];
@@ -32,36 +34,64 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $uinque_image   = substr(md5(time()), 0, 10) . '.' . $file_ext;
     $uploaded_image = "upload/" . $uinque_image;
 
-    if ($tittle == "" || $cat == "" || $body == "" || $tags == "" || $author == "" || $file_name == "") {
+    if ($tittle == "" || $cat == "" || $body == "" || $tags == "" || $author == "") {
         echo "<span class='error'>Field Must Not Be Empty.</span>";
-    } elseif ($file_size > 1048576) {
-        echo '<span class="error">Image Size should be less then 1MB.</span>';
-    } elseif (in_array($file_ext, $permited) === false) {
-        echo '<span class="error">You can upload only:-' . implode(',', $permited) . '</span>';
     } else {
-        move_uploaded_file($file_temp, $uploaded_image);
-        $query         = "INSERT INTO tbl_post (cat, tittle, body, image, author, tags) VALUES ('$cat', '$tittle', '$body', '$uploaded_image', '$author', '$tags')";
-        $inserted_rows = $db->insert($query);
-        if ($inserted_rows) {
-            echo '<span class="success">New Post Added Successfully.</span>';
+        if (!empty($file_name)) {
+            if ($file_size > 1048576) {
+                echo '<span class="error">Image Size should be less then 1MB.</span>';
+            } elseif (in_array($file_ext, $permited) === false) {
+                echo '<span class="error">You can upload only:-' . implode(',', $permited) . '</span>';
+            } else {
+                move_uploaded_file($file_temp, $uploaded_image);
+                $query = "UPDATE tbl_post
+            SET
+            cat     = '$cat',
+            tittle  = '$tittle',
+            body    = '$body'
+            image   = '$uploaded_image',
+            author  = '$author',
+            tags    = '$tags',
+            userid  = '$userid'
+            WHERE id = '$postid'";
+                $updated_row = $db->update($query);
+                if ($updated_row) {
+                    echo '<span class="success">Data Updated Successfully.</span>';
+                } else {
+                    echo '<span class="error">Data Not Updated.</span>';
+                }
+            }
         } else {
-            echo '<span class="error">Data Not Added.</span>';
+            $query = "UPDATE tbl_post
+            SET
+            cat     = '$cat',
+            tittle  = '$tittle',
+            body    = '$body',            
+            author  = '$author',
+            tags    = '$tags',
+            userid  = '$userid'
+            WHERE id = '$postid'";
+            $updated_row = $db->update($query);
+            if ($updated_row) {
+                echo '<span class="success">Data Updated Successfully.</span>';
+            } else {
+                echo '<span class="error">Data Not Updated.</span>';
+            }
         }
     }
 }
-
 
  ?>
 
                 <div class="block">
                 <?php 
-
-                $query = "SELECT * FROM tbl_post WHERE id='$postid' ORDER BY id DESC";
+ 
+                $query = "SELECT * FROM tbl_post WHERE id = '$postid'";
                 $getpost = $db->select($query);
                 if ($getpost) {
                     while ($postresult = $getpost->fetch_assoc()) {
                         ?>               
-                 <form action="addpost.php" method="post" enctype="multipart/form-data">
+                 <form action="" method="POST" enctype="multipart/form-data">
                     <table class="form">
                        
                         <tr>
@@ -136,6 +166,7 @@ $query = "SELECT * FROM tbl_category";
                             </td>
                             <td>
                                 <input type="text" name="author" value="<?php echo $postresult['author']; ?>" class="medium" />
+                                <input type="hidden" name="userid" readonly value="<?php echo Session::get('userId') ?>" class="medium" />
                             </td>
                         </tr>
                         <tr>

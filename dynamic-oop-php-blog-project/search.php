@@ -1,11 +1,11 @@
 <?php include 'inc/header.php'; ?>
 
 <?php 
-
-if (!isset($_GET['search']) || $_GET['search']==null) {
+$search = mysqli_real_escape_string($db->link, $_GET['search']);
+if (!isset($search) || $search == null) {
     header("Location:404.php");
 } else {
-    $search = $_GET['search'];
+    $search = $search;
 }
 
  ?>

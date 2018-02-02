@@ -1,11 +1,12 @@
 <?php include 'inc/header.php' ?>
 <?php include 'inc/sidebar.php' ?>
-<?php 
-if (!isset($_GET['catid']) || $_GET['catid'] == null) {
+<?php
+$catid = mysqli_real_escape_string($db->link, $_GET['catid']);
+if (!isset($catid) || $catid == null) {
     echo "<script>window.location = 'catlist.php'; </script>";
     // header("Location:catlist.php");
 } else {
-    $id = $_GET['catid'];
+    $id = $catid;
 }
 
  ?>

@@ -1,11 +1,11 @@
 <?php include 'inc/header.php' ?>
 
 <?php 
-
-if (!isset($_GET['id']) || $_GET['id']==null) {
+$postid = mysqli_real_escape_string($db->link, $_GET['id']);
+if (!isset($postid) || $postid == null) {
     header("Location:404.php");
 } else {
-    $id = $_GET['id'];
+    $id = $postid;
 }
 
  ?>

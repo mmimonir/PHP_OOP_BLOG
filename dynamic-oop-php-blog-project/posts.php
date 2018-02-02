@@ -1,11 +1,11 @@
 <?php include 'inc/header.php'; ?>
 
 <?php 
-
-if (!isset($_GET['category']) || $_GET['category']==null) {
+$category = mysqli_real_escape_string($db->link, $_GET['category']);
+if (!isset($category) || $category == null) {
     header("Location:404.php");
 } else {
-    $id = $_GET['category'];
+    $id = $category;
 }
 
  ?>

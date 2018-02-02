@@ -10,6 +10,15 @@ Session::checkSession();
 $db = new Database();
 $fm = new Format();
  ?>
+ <?php 
+
+header("Cache-Control: no-cache, must-revalidate");
+header("Pragma: no-cache");
+header("Expires:Sat, 26 Jul 1997 05:00:00 GMT");
+header("Cache-Control:max-age-2592000");
+
+
+  ?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -63,7 +72,7 @@ $fm = new Format();
                          ?>
                     <div class="floatleft marginleft10">
                         <ul class="inline-ul floatleft">
-                            <li>Hello Admin</li>
+                            <li>Hello <?php echo Session::get('username'); ?></li>
                             <li><a href="?action=logout">Logout</a></li>
                         </ul>
                     </div>
@@ -77,9 +86,30 @@ $fm = new Format();
         <div class="grid_12">
             <ul class="nav main">
                 <li class="ic-dashboard"><a href="index.php"><span>Dashboard</span></a> </li>
-                <li class="ic-form-style"><a href=""><span>User Profile</span></a></li>
+                <li class="ic-dashboard"><a href="theme.php"><span>Theme</span></a> </li>
+                <li class="ic-form-style"><a href="profile.php"><span>User Profile</span></a></li>
                 <li class="ic-typography"><a href="changepassword.php"><span>Change Password</span></a></li>
-                <li class="ic-grid-tables"><a href="inbox.php"><span>Inbox</span></a></li>
+                <li class="ic-grid-tables"><a href="inbox.php"><span>Inbox
+                <?php 
+                $query = "SELECT * FROM tbl_contact WHERE status ='0' ORDER BY id DESC";
+                        $msg = $db->select($query);
+                        if ($msg) {
+                            $count = mysqli_num_rows($msg);
+                            echo "(".$count.")";
+                        } else {
+                            echo "(0)";
+                        }
+
+                  ?>
+                </span></a></li>
+<?php if (Session::get('userRole') == '0') {
+                      ?>
+                <li class="ic-charts"><a href="adduser.php"><span>Add User</span></a></li>
+                <?php
+                  } ?>
+                
+
+                <li class="ic-charts"><a href="userlist.php"><span>User List</span></a></li>
                 <li class="ic-charts"><a href="postlist.php"><span>Visit Website</span></a></li>
             </ul>
         </div>

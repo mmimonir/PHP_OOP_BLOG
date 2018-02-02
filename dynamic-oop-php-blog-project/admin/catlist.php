@@ -5,8 +5,10 @@
             <div class="box round first grid">
                 <h2>Category List</h2>
                 <?php 
-                if (isset($_GET['delid'])) {
-                    $delid = $_GET['delid'];
+                
+                if (isset($_GET['delcat'])) {
+                    $delid = mysqli_real_escape_string($db->link, $_GET['delcat']);
+                    $delid = $delid;
                     $delquery = "DELETE FROM tbl_category WHERE id = '$delid'";
                     $deldata = $db->delete($delquery);
                     if ($deldata) {
@@ -40,7 +42,7 @@
                             <td>
                                 <a href="editcat.php?catid=<?php echo $result['id'] ?>">Edit</a>
                                  || 
-                                 <a onclick="return confirm('Are you sure to Delete?');" href="?delid=<?php echo $result['id'] ?>">Delete</a>
+            <a onclick="return confirm('Are you sure to Delete?'); " href="?delcat=<?php echo $result['id'] ?>">Delete</a>
                                 </td>
                         </tr>
                         <?php

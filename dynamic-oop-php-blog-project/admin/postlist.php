@@ -33,7 +33,7 @@
                                 $i++; ?>
 						<tr class="odd gradeX">
 							<td><?php echo $i; ?></td>
-							<td style="font-weight:700"><a href="editpost.php?editpostid=<?php echo $result['id']; ?>"><?php echo $result['tittle']; ?></a></td>
+							<td style="font-weight:700"><?php echo $result['tittle']; ?></td>
 							<td><?php echo $fm->textShorten($result['body'], 50); ?></td>
 							<td><?php echo $result['name']; ?></td>
 							<td><img src="<?php echo $result['image']; ?>" height="40px" width="60px"></td>
@@ -41,8 +41,17 @@
 							<td><?php echo $result['tags']; ?></td>
 							<td><?php echo $fm->formatDate($result['date']); ?></td>
 							<td>
-								<a href="editpost.php?editpostid=<?php echo $result['id']; ?>">Edit</a> || 
+								<a href="viewpost.php?viewpostid=<?php echo $result['id']; ?>">View</a> 
+
+
+								<?php if (Session::get('userId') == $result['userid'] || Session::get('userRole') == '0') {
+                                    ?>
+                                    || <a href="editpost.php?editpostid=<?php echo $result['id']; ?>">Edit</a> ||
 								<a onclick="return confirm('Are you sure to Delete?');" href="deletepost.php?delpostid=<?php echo $result['id']; ?>">Delete</a>
+                               <?php
+                                } ?>
+								
+								
 							</td>
 						</tr>
 						<?php
